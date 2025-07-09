@@ -1,0 +1,9 @@
+home_team,away_team,home_team_avg_points,away_team_avg_points,winner
+Lakers,Celtics,110,105,1
+Bulls,Heat,102,98,1
+Warriors,Nets,115,112,0
+Celtics,Heat,108,101,1
+Lakers,Warriors,112,114,0
+Bulls,Celtics,99,103,0
+Heat,Lakers,100,108,0
+Nets,Bulls,111,109,1

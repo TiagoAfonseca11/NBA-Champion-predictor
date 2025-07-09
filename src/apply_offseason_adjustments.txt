@@ -1,0 +1,1751 @@
+{
+    "chunks": [
+        {
+            "type": "txt",
+            "chunk_number": 1,
+            "lines": [
+                {
+                    "line_number": 1,
+                    "text": "import pandas as pd"
+                },
+                {
+                    "line_number": 2,
+                    "text": "import numpy as np"
+                },
+                {
+                    "line_number": 3,
+                    "text": "from datetime import datetime"
+                },
+                {
+                    "line_number": 4,
+                    "text": "import random"
+                },
+                {
+                    "line_number": 5,
+                    "text": "from src.nba_data_fetcher import get_comprehensive_team_data"
+                },
+                {
+                    "line_number": 6,
+                    "text": "from src.models.predict import NBAChampionPredictor, analyze_matchup"
+                },
+                {
+                    "line_number": 7,
+                    "text": "import warnings"
+                },
+                {
+                    "line_number": 8,
+                    "text": "warnings.filterwarnings('ignore')"
+                },
+                {
+                    "line_number": 9,
+                    "text": ""
+                },
+                {
+                    "line_number": 10,
+                    "text": "class NBAPlayoffSimulator:"
+                },
+                {
+                    "line_number": 11,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 12,
+                    "text": "Simulador completo dos playoffs da NBA"
+                },
+                {
+                    "line_number": 13,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 14,
+                    "text": ""
+                },
+                {
+                    "line_number": 15,
+                    "text": "def __init__(self):"
+                },
+                {
+                    "line_number": 16,
+                    "text": "self.predictor = NBAChampionPredictor()"
+                },
+                {
+                    "line_number": 17,
+                    "text": "self.teams_data = None"
+                },
+                {
+                    "line_number": 18,
+                    "text": "self.playoff_bracket = None"
+                },
+                {
+                    "line_number": 19,
+                    "text": "self.simulation_results = {}"
+                },
+                {
+                    "line_number": 20,
+                    "text": ""
+                },
+                {
+                    "line_number": 21,
+                    "text": "def load_teams_data(self, season='2024-25'):"
+                },
+                {
+                    "line_number": 22,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 23,
+                    "text": "Carregar dados das equipas"
+                },
+                {
+                    "line_number": 24,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 25,
+                    "text": "print(\"\ud83d\udcca A carregar dados das equipas...\")"
+                },
+                {
+                    "line_number": 26,
+                    "text": "self.teams_data = get_comprehensive_team_data(season)"
+                },
+                {
+                    "line_number": 27,
+                    "text": ""
+                },
+                {
+                    "line_number": 28,
+                    "text": "if self.teams_data.empty:"
+                },
+                {
+                    "line_number": 29,
+                    "text": "print(\"\u274c N\u00e3o foi poss\u00edvel carregar dados das equipas\")"
+                },
+                {
+                    "line_number": 30,
+                    "text": "return False"
+                },
+                {
+                    "line_number": 31,
+                    "text": ""
+                },
+                {
+                    "line_number": 32,
+                    "text": "# Treinar modelo se necess\u00e1rio"
+                },
+                {
+                    "line_number": 33,
+                    "text": "if not self.predictor.load_model():"
+                },
+                {
+                    "line_number": 34,
+                    "text": "print(\"\ud83e\udd16 A treinar novo modelo...\")"
+                },
+                {
+                    "line_number": 35,
+                    "text": "self.predictor.train_model(self.teams_data)"
+                },
+                {
+                    "line_number": 36,
+                    "text": ""
+                },
+                {
+                    "line_number": 37,
+                    "text": "return True"
+                },
+                {
+                    "line_number": 38,
+                    "text": ""
+                },
+                {
+                    "line_number": 39,
+                    "text": "def create_playoff_bracket(self, conference_teams=8):"
+                },
+                {
+                    "line_number": 40,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 41,
+                    "text": "Criar bracket dos playoffs baseado na classifica\u00e7\u00e3o atual"
+                },
+                {
+                    "line_number": 42,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 43,
+                    "text": "print(\"\ud83c\udfc0 A criar bracket dos playoffs...\")"
+                },
+                {
+                    "line_number": 44,
+                    "text": ""
+                },
+                {
+                    "line_number": 45,
+                    "text": "if self.teams_data is None:"
+                },
+                {
+                    "line_number": 46,
+                    "text": "print(\"\u274c Dados das equipas n\u00e3o carregados\")"
+                },
+                {
+                    "line_number": 47,
+                    "text": "return None"
+                },
+                {
+                    "line_number": 48,
+                    "text": ""
+                },
+                {
+                    "line_number": 49,
+                    "text": "# Separar por confer\u00eancia (simplificado - baseado em nomes conhecidos)"
+                },
+                {
+                    "line_number": 50,
+                    "text": "eastern_teams = ["
+                },
+                {
+                    "line_number": 51,
+                    "text": "'Boston Celtics', 'Miami Heat', 'Philadelphia 76ers', 'New York Knicks',"
+                },
+                {
+                    "line_number": 52,
+                    "text": "'Cleveland Cavaliers', 'Indiana Pacers', 'Orlando Magic', 'Brooklyn Nets',"
+                },
+                {
+                    "line_number": 53,
+                    "text": "'Atlanta Hawks', 'Chicago Bulls', 'Toronto Raptors', 'Washington Wizards',"
+                },
+                {
+                    "line_number": 54,
+                    "text": "'Charlotte Hornets', 'Detroit Pistons'"
+                },
+                {
+                    "line_number": 55,
+                    "text": "]"
+                },
+                {
+                    "line_number": 56,
+                    "text": ""
+                },
+                {
+                    "line_number": 57,
+                    "text": "# Filtrar equipas por confer\u00eancia"
+                },
+                {
+                    "line_number": 58,
+                    "text": "east_df = self.teams_data[self.teams_data['TEAM_NAME'].isin(eastern_teams)].copy()"
+                },
+                {
+                    "line_number": 59,
+                    "text": "west_df = self.teams_data[~self.teams_data['TEAM_NAME'].isin(eastern_teams)].copy()"
+                },
+                {
+                    "line_number": 60,
+                    "text": ""
+                },
+                {
+                    "line_number": 61,
+                    "text": "# Ordenar por win percentage"
+                },
+                {
+                    "line_number": 62,
+                    "text": "east_df = east_df.sort_values('W_PCT', ascending=False).head(conference_teams)"
+                },
+                {
+                    "line_number": 63,
+                    "text": "west_df = west_df.sort_values('W_PCT', ascending=False).head(conference_teams)"
+                },
+                {
+                    "line_number": 64,
+                    "text": ""
+                },
+                {
+                    "line_number": 65,
+                    "text": "# Criar matchups da primeira ronda"
+                },
+                {
+                    "line_number": 66,
+                    "text": "east_matchups = ["
+                },
+                {
+                    "line_number": 67,
+                    "text": "(east_df.iloc[0]['TEAM_NAME'], east_df.iloc[7]['TEAM_NAME']),"
+                },
+                {
+                    "line_number": 68,
+                    "text": "(east_df.iloc[1]['TEAM_NAME'], east_df.iloc[6]['TEAM_NAME']),"
+                },
+                {
+                    "line_number": 69,
+                    "text": "(east_df.iloc[2]['TEAM_NAME'], east_df.iloc[5]['TEAM_NAME']),"
+                },
+                {
+                    "line_number": 70,
+                    "text": "(east_df.iloc[3]['TEAM_NAME'], east_df.iloc[4]['TEAM_NAME'])"
+                },
+                {
+                    "line_number": 71,
+                    "text": "]"
+                },
+                {
+                    "line_number": 72,
+                    "text": ""
+                },
+                {
+                    "line_number": 73,
+                    "text": "west_matchups = ["
+                },
+                {
+                    "line_number": 74,
+                    "text": "(west_df.iloc[0]['TEAM_NAME'], west_df.iloc[7]['TEAM_NAME']),"
+                },
+                {
+                    "line_number": 75,
+                    "text": "(west_df.iloc[1]['TEAM_NAME'], west_df.iloc[6]['TEAM_NAME']),"
+                },
+                {
+                    "line_number": 76,
+                    "text": "(west_df.iloc[2]['TEAM_NAME'], west_df.iloc[5]['TEAM_NAME']),"
+                },
+                {
+                    "line_number": 77,
+                    "text": "(west_df.iloc[3]['TEAM_NAME'], west_df.iloc[4]['TEAM_NAME'])"
+                },
+                {
+                    "line_number": 78,
+                    "text": "]"
+                },
+                {
+                    "line_number": 79,
+                    "text": ""
+                },
+                {
+                    "line_number": 80,
+                    "text": "self.playoff_bracket = {"
+                },
+                {
+                    "line_number": 81,
+                    "text": "'first_round': {"
+                },
+                {
+                    "line_number": 82,
+                    "text": "'eastern': east_matchups,"
+                },
+                {
+                    "line_number": 83,
+                    "text": "'western': west_matchups"
+                },
+                {
+                    "line_number": 84,
+                    "text": "},"
+                },
+                {
+                    "line_number": 85,
+                    "text": "'east_teams': east_df,"
+                },
+                {
+                    "line_number": 86,
+                    "text": "'west_teams': west_df"
+                },
+                {
+                    "line_number": 87,
+                    "text": "}"
+                },
+                {
+                    "line_number": 88,
+                    "text": ""
+                },
+                {
+                    "line_number": 89,
+                    "text": "print(f\"\u2705 Bracket criado com {len(east_df)} equipas do Este e {len(west_df)} do Oeste\")"
+                },
+                {
+                    "line_number": 90,
+                    "text": "return self.playoff_bracket"
+                },
+                {
+                    "line_number": 91,
+                    "text": ""
+                },
+                {
+                    "line_number": 92,
+                    "text": "def simulate_series(self, team1_name, team2_name, series_format=7, home_advantage=0.1):"
+                },
+                {
+                    "line_number": 93,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 94,
+                    "text": "Simular uma s\u00e9rie entre duas equipas"
+                },
+                {
+                    "line_number": 95,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 96,
+                    "text": "try:"
+                },
+                {
+                    "line_number": 97,
+                    "text": "# Obter dados das equipas"
+                },
+                {
+                    "line_number": 98,
+                    "text": "team1_data = self.teams_data[self.teams_data['TEAM_NAME'] == team1_name].iloc[0]"
+                },
+                {
+                    "line_number": 99,
+                    "text": "team2_data = self.teams_data[self.teams_data['TEAM_NAME'] == team2_name].iloc[0]"
+                },
+                {
+                    "line_number": 100,
+                    "text": ""
+                },
+                {
+                    "line_number": 101,
+                    "text": "# Calcular probabilidades base"
+                },
+                {
+                    "line_number": 102,
+                    "text": "team1_prob = self.calculate_team_strength(team1_data)"
+                },
+                {
+                    "line_number": 103,
+                    "text": "team2_prob = self.calculate_team_strength(team2_data)"
+                },
+                {
+                    "line_number": 104,
+                    "text": ""
+                },
+                {
+                    "line_number": 105,
+                    "text": "# Normalizar probabilidades"
+                },
+                {
+                    "line_number": 106,
+                    "text": "total_prob = team1_prob + team2_prob"
+                },
+                {
+                    "line_number": 107,
+                    "text": "team1_win_prob = team1_prob / total_prob"
+                },
+                {
+                    "line_number": 108,
+                    "text": "team2_win_prob = team2_prob / total_prob"
+                },
+                {
+                    "line_number": 109,
+                    "text": ""
+                },
+                {
+                    "line_number": 110,
+                    "text": "# Simular s\u00e9rie"
+                },
+                {
+                    "line_number": 111,
+                    "text": "team1_wins = 0"
+                },
+                {
+                    "line_number": 112,
+                    "text": "team2_wins = 0"
+                },
+                {
+                    "line_number": 113,
+                    "text": "games_needed = (series_format + 1) // 2  # Jogos necess\u00e1rios para ganhar"
+                },
+                {
+                    "line_number": 114,
+                    "text": ""
+                },
+                {
+                    "line_number": 115,
+                    "text": "game_count = 0"
+                },
+                {
+                    "line_number": 116,
+                    "text": "while team1_wins < games_needed and team2_wins < games_needed:"
+                },
+                {
+                    "line_number": 117,
+                    "text": "game_count += 1"
+                },
+                {
+                    "line_number": 118,
+                    "text": ""
+                },
+                {
+                    "line_number": 119,
+                    "text": "# Aplicar home advantage (alternado)"
+                },
+                {
+                    "line_number": 120,
+                    "text": "current_team1_prob = team1_win_prob"
+                },
+                {
+                    "line_number": 121,
+                    "text": "if game_count <= 2 or game_count in [5, 7]:  # Team1 em casa"
+                },
+                {
+                    "line_number": 122,
+                    "text": "current_team1_prob += home_advantage"
+                },
+                {
+                    "line_number": 123,
+                    "text": "elif game_count in [3, 4, 6]:  # Team2 em casa"
+                },
+                {
+                    "line_number": 124,
+                    "text": "current_team1_prob -= home_advantage"
+                },
+                {
+                    "line_number": 125,
+                    "text": ""
+                },
+                {
+                    "line_number": 126,
+                    "text": "# Simular jogo"
+                },
+                {
+                    "line_number": 127,
+                    "text": "if random.random() < current_team1_prob:"
+                },
+                {
+                    "line_number": 128,
+                    "text": "team1_wins += 1"
+                },
+                {
+                    "line_number": 129,
+                    "text": "else:"
+                },
+                {
+                    "line_number": 130,
+                    "text": "team2_wins += 1"
+                },
+                {
+                    "line_number": 131,
+                    "text": ""
+                },
+                {
+                    "line_number": 132,
+                    "text": "# Determinar vencedor"
+                },
+                {
+                    "line_number": 133,
+                    "text": "winner = team1_name if team1_wins > team2_wins else team2_name"
+                },
+                {
+                    "line_number": 134,
+                    "text": "series_score = f\"{team1_wins}-{team2_wins}\""
+                },
+                {
+                    "line_number": 135,
+                    "text": ""
+                },
+                {
+                    "line_number": 136,
+                    "text": "return {"
+                },
+                {
+                    "line_number": 137,
+                    "text": "'winner': winner,"
+                },
+                {
+                    "line_number": 138,
+                    "text": "'loser': team2_name if winner == team1_name else team1_name,"
+                },
+                {
+                    "line_number": 139,
+                    "text": "'series_score': series_score,"
+                },
+                {
+                    "line_number": 140,
+                    "text": "'games_played': game_count,"
+                },
+                {
+                    "line_number": 141,
+                    "text": "'team1_win_prob': team1_win_prob,"
+                },
+                {
+                    "line_number": 142,
+                    "text": "'team2_win_prob': team2_win_prob"
+                },
+                {
+                    "line_number": 143,
+                    "text": "}"
+                },
+                {
+                    "line_number": 144,
+                    "text": ""
+                },
+                {
+                    "line_number": 145,
+                    "text": "except Exception as e:"
+                },
+                {
+                    "line_number": 146,
+                    "text": "print(f\"\u274c Erro na simula\u00e7\u00e3o {team1_name} vs {team2_name}: {e}\")"
+                },
+                {
+                    "line_number": 147,
+                    "text": "return None"
+                },
+                {
+                    "line_number": 148,
+                    "text": ""
+                },
+                {
+                    "line_number": 149,
+                    "text": "def calculate_team_strength(self, team_data):"
+                },
+                {
+                    "line_number": 150,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 151,
+                    "text": "Calcular for\u00e7a da equipa baseada em m\u00faltiplas m\u00e9tricas"
+                },
+                {
+                    "line_number": 152,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 153,
+                    "text": "strength = 0"
+                },
+                {
+                    "line_number": 154,
+                    "text": ""
+                },
+                {
+                    "line_number": 155,
+                    "text": "# Win percentage (40%)"
+                },
+                {
+                    "line_number": 156,
+                    "text": "strength += team_data.get('W_PCT', 0.5) * 0.4"
+                },
+                {
+                    "line_number": 157,
+                    "text": ""
+                },
+                {
+                    "line_number": 158,
+                    "text": "# Net rating (30%)"
+                },
+                {
+                    "line_number": 159,
+                    "text": "net_rating = team_data.get('NET_RATING', 0)"
+                },
+                {
+                    "line_number": 160,
+                    "text": "strength += (net_rating / 20) * 0.3  # Normalizado"
+                },
+                {
+                    "line_number": 161,
+                    "text": ""
+                },
+                {
+                    "line_number": 162,
+                    "text": "# Plus/minus (20%)"
+                },
+                {
+                    "line_number": 163,
+                    "text": "plus_minus = team_data.get('PLUS_MINUS', 0)"
+                },
+                {
+                    "line_number": 164,
+                    "text": "strength += (plus_minus / 500) * 0.2  # Normalizado"
+                },
+                {
+                    "line_number": 165,
+                    "text": ""
+                },
+                {
+                    "line_number": 166,
+                    "text": "# Clutch performance (10%)"
+                },
+                {
+                    "line_number": 167,
+                    "text": "clutch_pct = team_data.get('CLUTCH_W_PCT', team_data.get('W_PCT', 0.5))"
+                },
+                {
+                    "line_number": 168,
+                    "text": "strength += clutch_pct * 0.1"
+                },
+                {
+                    "line_number": 169,
+                    "text": ""
+                },
+                {
+                    "line_number": 170,
+                    "text": "return max(0.1, strength)  # M\u00ednimo de 0.1"
+                },
+                {
+                    "line_number": 171,
+                    "text": ""
+                },
+                {
+                    "line_number": 172,
+                    "text": "def simulate_round(self, matchups, round_name):"
+                },
+                {
+                    "line_number": 173,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 174,
+                    "text": "Simular uma ronda completa"
+                },
+                {
+                    "line_number": 175,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 176,
+                    "text": "print(f\"\\n\ud83c\udfc0 A simular {round_name}...\")"
+                },
+                {
+                    "line_number": 177,
+                    "text": "print(\"-\" * 50)"
+                },
+                {
+                    "line_number": 178,
+                    "text": ""
+                },
+                {
+                    "line_number": 179,
+                    "text": "winners = []"
+                },
+                {
+                    "line_number": 180,
+                    "text": "round_results = []"
+                },
+                {
+                    "line_number": 181,
+                    "text": ""
+                },
+                {
+                    "line_number": 182,
+                    "text": "for team1, team2 in matchups:"
+                },
+                {
+                    "line_number": 183,
+                    "text": "result = self.simulate_series(team1, team2)"
+                },
+                {
+                    "line_number": 184,
+                    "text": "if result:"
+                },
+                {
+                    "line_number": 185,
+                    "text": "winner = result['winner']"
+                },
+                {
+                    "line_number": 186,
+                    "text": "winners.append(winner)"
+                },
+                {
+                    "line_number": 187,
+                    "text": "round_results.append(result)"
+                },
+                {
+                    "line_number": 188,
+                    "text": ""
+                },
+                {
+                    "line_number": 189,
+                    "text": "# Mostrar resultado"
+                },
+                {
+                    "line_number": 190,
+                    "text": "print(f\"{team1:<25} vs {team2:<25} \u2192 {winner} ({result['series_score']})\")"
+                },
+                {
+                    "line_number": 191,
+                    "text": ""
+                },
+                {
+                    "line_number": 192,
+                    "text": "# An\u00e1lise r\u00e1pida"
+                },
+                {
+                    "line_number": 193,
+                    "text": "if result['team1_win_prob'] > 0.6:"
+                },
+                {
+                    "line_number": 194,
+                    "text": "print(f\"   \ud83d\udcca {team1} era favorito ({result['team1_win_prob']:.1%})\")"
+                },
+                {
+                    "line_number": 195,
+                    "text": "elif result['team2_win_prob'] > 0.6:"
+                },
+                {
+                    "line_number": 196,
+                    "text": "print(f\"   \ud83d\udcca {team2} era favorito ({result['team2_win_prob']:.1%})\")"
+                },
+                {
+                    "line_number": 197,
+                    "text": "else:"
+                },
+                {
+                    "line_number": 198,
+                    "text": "print(f\"   \ud83d\udcca S\u00e9rie equilibrada\")"
+                },
+                {
+                    "line_number": 199,
+                    "text": ""
+                },
+                {
+                    "line_number": 200,
+                    "text": "self.simulation_results[round_name] = round_results"
+                },
+                {
+                    "line_number": 201,
+                    "text": "return winners"
+                },
+                {
+                    "line_number": 202,
+                    "text": ""
+                },
+                {
+                    "line_number": 203,
+                    "text": "def simulate_full_playoffs(self, num_simulations=1000):"
+                },
+                {
+                    "line_number": 204,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 205,
+                    "text": "Simular playoffs completos m\u00faltiplas vezes"
+                },
+                {
+                    "line_number": 206,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 207,
+                    "text": "print(f\"\ud83c\udfaf A simular playoffs {num_simulations} vezes...\")"
+                },
+                {
+                    "line_number": 208,
+                    "text": ""
+                },
+                {
+                    "line_number": 209,
+                    "text": "champions = {}"
+                },
+                {
+                    "line_number": 210,
+                    "text": "conference_winners = {'eastern': {}, 'western': {}}"
+                },
+                {
+                    "line_number": 211,
+                    "text": ""
+                },
+                {
+                    "line_number": 212,
+                    "text": "for sim in range(num_simulations):"
+                },
+                {
+                    "line_number": 213,
+                    "text": "if sim % 100 == 0:"
+                },
+                {
+                    "line_number": 214,
+                    "text": "print(f\"Simula\u00e7\u00e3o {sim + 1}/{num_simulations}\")"
+                },
+                {
+                    "line_number": 215,
+                    "text": ""
+                },
+                {
+                    "line_number": 216,
+                    "text": "# Resetar dados"
+                },
+                {
+                    "line_number": 217,
+                    "text": "self.simulation_results = {}"
+                },
+                {
+                    "line_number": 218,
+                    "text": ""
+                },
+                {
+                    "line_number": 219,
+                    "text": "# Primeira ronda"
+                },
+                {
+                    "line_number": 220,
+                    "text": "east_r1_winners = self.simulate_round("
+                },
+                {
+                    "line_number": 221,
+                    "text": "self.playoff_bracket['first_round']['eastern'],"
+                },
+                {
+                    "line_number": 222,
+                    "text": "'Eastern Conference First Round'"
+                },
+                {
+                    "line_number": 223,
+                    "text": ")"
+                },
+                {
+                    "line_number": 224,
+                    "text": "west_r1_winners = self.simulate_round("
+                },
+                {
+                    "line_number": 225,
+                    "text": "self.playoff_bracket['first_round']['western'],"
+                },
+                {
+                    "line_number": 226,
+                    "text": "'Western Conference First Round'"
+                },
+                {
+                    "line_number": 227,
+                    "text": ")"
+                },
+                {
+                    "line_number": 228,
+                    "text": ""
+                },
+                {
+                    "line_number": 229,
+                    "text": "# Semifinais de confer\u00eancia"
+                },
+                {
+                    "line_number": 230,
+                    "text": "east_sf_matchups = [(east_r1_winners[0], east_r1_winners[3]),"
+                },
+                {
+                    "line_number": 231,
+                    "text": "(east_r1_winners[1], east_r1_winners[2])]"
+                },
+                {
+                    "line_number": 232,
+                    "text": "west_sf_matchups = [(west_r1_winners[0], west_r1_winners[3]),"
+                },
+                {
+                    "line_number": 233,
+                    "text": "(west_r1_winners[1], west_r1_winners[2])]"
+                },
+                {
+                    "line_number": 234,
+                    "text": ""
+                },
+                {
+                    "line_number": 235,
+                    "text": "east_sf_winners = self.simulate_round(east_sf_matchups, 'Eastern Conference Semifinals')"
+                },
+                {
+                    "line_number": 236,
+                    "text": "west_sf_winners = self.simulate_round(west_sf_matchups, 'Western Conference Semifinals')"
+                },
+                {
+                    "line_number": 237,
+                    "text": ""
+                },
+                {
+                    "line_number": 238,
+                    "text": "# Finais de confer\u00eancia"
+                },
+                {
+                    "line_number": 239,
+                    "text": "east_final_result = self.simulate_series(east_sf_winners[0], east_sf_winners[1])"
+                },
+                {
+                    "line_number": 240,
+                    "text": "west_final_result = self.simulate_series(west_sf_winners[0], west_sf_winners[1])"
+                },
+                {
+                    "line_number": 241,
+                    "text": ""
+                },
+                {
+                    "line_number": 242,
+                    "text": "east_champion = east_final_result['winner']"
+                },
+                {
+                    "line_number": 243,
+                    "text": "west_champion = west_final_result['winner']"
+                },
+                {
+                    "line_number": 244,
+                    "text": ""
+                },
+                {
+                    "line_number": 245,
+                    "text": "# Contar vencedores de confer\u00eancia"
+                },
+                {
+                    "line_number": 246,
+                    "text": "conference_winners['eastern'][east_champion] = conference_winners['eastern'].get(east_champion, 0) + 1"
+                },
+                {
+                    "line_number": 247,
+                    "text": "conference_winners['western'][west_champion] = conference_winners['western'].get(west_champion, 0) + 1"
+                },
+                {
+                    "line_number": 248,
+                    "text": ""
+                },
+                {
+                    "line_number": 249,
+                    "text": "# Finais NBA"
+                },
+                {
+                    "line_number": 250,
+                    "text": "finals_result = self.simulate_series(east_champion, west_champion)"
+                },
+                {
+                    "line_number": 251,
+                    "text": "champion = finals_result['winner']"
+                },
+                {
+                    "line_number": 252,
+                    "text": ""
+                },
+                {
+                    "line_number": 253,
+                    "text": "# Contar campe\u00f5es"
+                },
+                {
+                    "line_number": 254,
+                    "text": "champions[champion] = champions.get(champion, 0) + 1"
+                },
+                {
+                    "line_number": 255,
+                    "text": ""
+                },
+                {
+                    "line_number": 256,
+                    "text": "return champions, conference_winners"
+                },
+                {
+                    "line_number": 257,
+                    "text": ""
+                },
+                {
+                    "line_number": 258,
+                    "text": "def simulate_single_playoffs(self):"
+                },
+                {
+                    "line_number": 259,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 260,
+                    "text": "Simular playoffs uma \u00fanica vez com detalhes"
+                },
+                {
+                    "line_number": 261,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 262,
+                    "text": "print(\"\\n\ud83c\udfc6 SIMULA\u00c7\u00c3O DETALHADA DOS PLAYOFFS NBA\")"
+                },
+                {
+                    "line_number": 263,
+                    "text": "print(\"=\" * 60)"
+                },
+                {
+                    "line_number": 264,
+                    "text": ""
+                },
+                {
+                    "line_number": 265,
+                    "text": "if not self.playoff_bracket:"
+                },
+                {
+                    "line_number": 266,
+                    "text": "print(\"\u274c Bracket n\u00e3o criado\")"
+                },
+                {
+                    "line_number": 267,
+                    "text": "return"
+                },
+                {
+                    "line_number": 268,
+                    "text": ""
+                },
+                {
+                    "line_number": 269,
+                    "text": "# Mostrar bracket inicial"
+                },
+                {
+                    "line_number": 270,
+                    "text": "self.display_bracket()"
+                },
+                {
+                    "line_number": 271,
+                    "text": ""
+                },
+                {
+                    "line_number": 272,
+                    "text": "# Primeira ronda"
+                },
+                {
+                    "line_number": 273,
+                    "text": "print(\"\\n\" + \"\ud83d\udd25\" * 20 + \" PRIMEIRA RONDA \" + \"\ud83d\udd25\" * 20)"
+                },
+                {
+                    "line_number": 274,
+                    "text": "east_r1_winners = self.simulate_round("
+                },
+                {
+                    "line_number": 275,
+                    "text": "self.playoff_bracket['first_round']['eastern'],"
+                },
+                {
+                    "line_number": 276,
+                    "text": "'Eastern Conference First Round'"
+                },
+                {
+                    "line_number": 277,
+                    "text": ")"
+                },
+                {
+                    "line_number": 278,
+                    "text": "west_r1_winners = self.simulate_round("
+                },
+                {
+                    "line_number": 279,
+                    "text": "self.playoff_bracket['first_round']['western'],"
+                },
+                {
+                    "line_number": 280,
+                    "text": "'Western Conference First Round'"
+                },
+                {
+                    "line_number": 281,
+                    "text": ")"
+                },
+                {
+                    "line_number": 282,
+                    "text": ""
+                },
+                {
+                    "line_number": 283,
+                    "text": "# Semifinais de confer\u00eancia"
+                },
+                {
+                    "line_number": 284,
+                    "text": "print(\"\\n\" + \"\u26a1\" * 20 + \" SEMIFINAIS \" + \"\u26a1\" * 20)"
+                },
+                {
+                    "line_number": 285,
+                    "text": "east_sf_matchups = [(east_r1_winners[0], east_r1_winners[3]),"
+                },
+                {
+                    "line_number": 286,
+                    "text": "(east_r1_winners[1], east_r1_winners[2])]"
+                },
+                {
+                    "line_number": 287,
+                    "text": "west_sf_matchups = [(west_r1_winners[0], west_r1_winners[3]),"
+                },
+                {
+                    "line_number": 288,
+                    "text": "(west_r1_winners[1], west_r1_winners[2])]"
+                },
+                {
+                    "line_number": 289,
+                    "text": ""
+                },
+                {
+                    "line_number": 290,
+                    "text": "east_sf_winners = self.simulate_round(east_sf_matchups, 'Eastern Conference Semifinals')"
+                },
+                {
+                    "line_number": 291,
+                    "text": "west_sf_winners = self.simulate_round(west_sf_matchups, 'Western Conference Semifinals')"
+                },
+                {
+                    "line_number": 292,
+                    "text": ""
+                },
+                {
+                    "line_number": 293,
+                    "text": "# Finais de confer\u00eancia"
+                },
+                {
+                    "line_number": 294,
+                    "text": "print(\"\\n\" + \"\ud83c\udfc6\" * 20 + \" FINAIS DE CONFER\u00caNCIA \" + \"\ud83c\udfc6\" * 20)"
+                },
+                {
+                    "line_number": 295,
+                    "text": "east_final_result = self.simulate_series(east_sf_winners[0], east_sf_winners[1])"
+                },
+                {
+                    "line_number": 296,
+                    "text": "west_final_result = self.simulate_series(west_sf_winners[0], west_sf_winners[1])"
+                },
+                {
+                    "line_number": 297,
+                    "text": ""
+                },
+                {
+                    "line_number": 298,
+                    "text": "east_champion = east_final_result['winner']"
+                },
+                {
+                    "line_number": 299,
+                    "text": "west_champion = west_final_result['winner']"
+                },
+                {
+                    "line_number": 300,
+                    "text": ""
+                },
+                {
+                    "line_number": 301,
+                    "text": "print(f\"\\n\ud83c\udfc6 CAMPE\u00c3O DO ESTE: {east_champion}\")"
+                },
+                {
+                    "line_number": 302,
+                    "text": "print(f\"\ud83c\udfc6 CAMPE\u00c3O DO OESTE: {west_champion}\")"
+                },
+                {
+                    "line_number": 303,
+                    "text": ""
+                },
+                {
+                    "line_number": 304,
+                    "text": "# An\u00e1lise dos finalistas"
+                },
+                {
+                    "line_number": 305,
+                    "text": "print(f\"\\n\u2694\ufe0f  AN\u00c1LISE DOS FINALISTAS:\")"
+                },
+                {
+                    "line_number": 306,
+                    "text": "analyze_matchup(east_champion, west_champion, self.teams_data)"
+                },
+                {
+                    "line_number": 307,
+                    "text": ""
+                },
+                {
+                    "line_number": 308,
+                    "text": "# Finais NBA"
+                },
+                {
+                    "line_number": 309,
+                    "text": "print(\"\\n\" + \"\ud83d\udc51\" * 25 + \" FINAIS NBA \" + \"\ud83d\udc51\" * 25)"
+                },
+                {
+                    "line_number": 310,
+                    "text": "finals_result = self.simulate_series(east_champion, west_champion)"
+                },
+                {
+                    "line_number": 311,
+                    "text": ""
+                },
+                {
+                    "line_number": 312,
+                    "text": "print(f\"\\n\ud83c\udfc6 CAMPE\u00c3O NBA: {finals_result['winner']}\")"
+                },
+                {
+                    "line_number": 313,
+                    "text": "print(f\"\ud83d\udcca S\u00e9rie: {finals_result['series_score']}\")"
+                },
+                {
+                    "line_number": 314,
+                    "text": "print(f\"\ud83c\udfae Jogos disputados: {finals_result['games_played']}\")"
+                },
+                {
+                    "line_number": 315,
+                    "text": ""
+                },
+                {
+                    "line_number": 316,
+                    "text": "return finals_result['winner']"
+                },
+                {
+                    "line_number": 317,
+                    "text": ""
+                },
+                {
+                    "line_number": 318,
+                    "text": "def display_bracket(self):"
+                },
+                {
+                    "line_number": 319,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 320,
+                    "text": "Mostrar bracket inicial"
+                },
+                {
+                    "line_number": 321,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 322,
+                    "text": "print(\"\\n\ud83d\udccb BRACKET DOS PLAYOFFS:\")"
+                },
+                {
+                    "line_number": 323,
+                    "text": "print(\"=\" * 50)"
+                },
+                {
+                    "line_number": 324,
+                    "text": ""
+                },
+                {
+                    "line_number": 325,
+                    "text": "print(\"\\n\ud83c\udfc0 CONFER\u00caNCIA ESTE:\")"
+                },
+                {
+                    "line_number": 326,
+                    "text": "for i, (team1, team2) in enumerate(self.playoff_bracket['first_round']['eastern'], 1):"
+                },
+                {
+                    "line_number": 327,
+                    "text": "print(f\"  {i}. {team1} vs {team2}\")"
+                },
+                {
+                    "line_number": 328,
+                    "text": ""
+                },
+                {
+                    "line_number": 329,
+                    "text": "print(\"\\n\ud83c\udfc0 CONFER\u00caNCIA OESTE:\")"
+                },
+                {
+                    "line_number": 330,
+                    "text": "for i, (team1, team2) in enumerate(self.playoff_bracket['first_round']['western'], 1):"
+                },
+                {
+                    "line_number": 331,
+                    "text": "print(f\"  {i}. {team1} vs {team2}\")"
+                },
+                {
+                    "line_number": 332,
+                    "text": ""
+                },
+                {
+                    "line_number": 333,
+                    "text": "def run_championship_odds(self, simulations=1000):"
+                },
+                {
+                    "line_number": 334,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 335,
+                    "text": "Executar an\u00e1lise completa de probabilidades"
+                },
+                {
+                    "line_number": 336,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 337,
+                    "text": "print(f\"\\n\ud83c\udfb2 AN\u00c1LISE DE PROBABILIDADES ({simulations} simula\u00e7\u00f5es)\")"
+                },
+                {
+                    "line_number": 338,
+                    "text": "print(\"=\" * 60)"
+                },
+                {
+                    "line_number": 339,
+                    "text": ""
+                },
+                {
+                    "line_number": 340,
+                    "text": "champions, conference_winners = self.simulate_full_playoffs(simulations)"
+                },
+                {
+                    "line_number": 341,
+                    "text": ""
+                },
+                {
+                    "line_number": 342,
+                    "text": "# Mostrar probabilidades de campeonato"
+                },
+                {
+                    "line_number": 343,
+                    "text": "print(\"\\n\ud83c\udfc6 PROBABILIDADES DE CAMPEONATO:\")"
+                },
+                {
+                    "line_number": 344,
+                    "text": "print(\"-\" * 50)"
+                },
+                {
+                    "line_number": 345,
+                    "text": ""
+                },
+                {
+                    "line_number": 346,
+                    "text": "sorted_champions = sorted(champions.items(), key=lambda x: x[1], reverse=True)"
+                },
+                {
+                    "line_number": 347,
+                    "text": "for i, (team, wins) in enumerate(sorted_champions, 1):"
+                },
+                {
+                    "line_number": 348,
+                    "text": "percentage = (wins / simulations) * 100"
+                },
+                {
+                    "line_number": 349,
+                    "text": "emoji = \"\ud83e\udd47\" if i == 1 else \"\ud83e\udd48\" if i == 2 else \"\ud83e\udd49\" if i == 3 else f\"{i:2d}.\""
+                },
+                {
+                    "line_number": 350,
+                    "text": "print(f\"{emoji} {team:<25} {percentage:6.1f}% ({wins} vit\u00f3rias)\")"
+                },
+                {
+                    "line_number": 351,
+                    "text": ""
+                },
+                {
+                    "line_number": 352,
+                    "text": "# Mostrar probabilidades de confer\u00eancia"
+                },
+                {
+                    "line_number": 353,
+                    "text": "print(\"\\n\ud83c\udfc0 PROBABILIDADES DE VENCER A CONFER\u00caNCIA:\")"
+                },
+                {
+                    "line_number": 354,
+                    "text": "print(\"-\" * 50)"
+                },
+                {
+                    "line_number": 355,
+                    "text": ""
+                },
+                {
+                    "line_number": 356,
+                    "text": "print(\"ESTE:\")"
+                },
+                {
+                    "line_number": 357,
+                    "text": "east_sorted = sorted(conference_winners['eastern'].items(), key=lambda x: x[1], reverse=True)"
+                },
+                {
+                    "line_number": 358,
+                    "text": "for team, wins in east_sorted:"
+                },
+                {
+                    "line_number": 359,
+                    "text": "percentage = (wins / simulations) * 100"
+                },
+                {
+                    "line_number": 360,
+                    "text": "print(f\"  {team:<25} {percentage:6.1f}%\")"
+                },
+                {
+                    "line_number": 361,
+                    "text": ""
+                },
+                {
+                    "line_number": 362,
+                    "text": "print(\"\\nOESTE:\")"
+                },
+                {
+                    "line_number": 363,
+                    "text": "west_sorted = sorted(conference_winners['western'].items(), key=lambda x: x[1], reverse=True)"
+                },
+                {
+                    "line_number": 364,
+                    "text": "for team, wins in west_sorted:"
+                },
+                {
+                    "line_number": 365,
+                    "text": "percentage = (wins / simulations) * 100"
+                },
+                {
+                    "line_number": 366,
+                    "text": "print(f\"  {team:<25} {percentage:6.1f}%\")"
+                },
+                {
+                    "line_number": 367,
+                    "text": ""
+                },
+                {
+                    "line_number": 368,
+                    "text": "# Salvar resultados"
+                },
+                {
+                    "line_number": 369,
+                    "text": "self.save_simulation_results(sorted_champions, east_sorted, west_sorted, simulations)"
+                },
+                {
+                    "line_number": 370,
+                    "text": ""
+                },
+                {
+                    "line_number": 371,
+                    "text": "return sorted_champions[0][0]  # Retornar favorito"
+                },
+                {
+                    "line_number": 372,
+                    "text": ""
+                },
+                {
+                    "line_number": 373,
+                    "text": "def save_simulation_results(self, champions, east_winners, west_winners, simulations):"
+                },
+                {
+                    "line_number": 374,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 375,
+                    "text": "Salvar resultados da simula\u00e7\u00e3o"
+                },
+                {
+                    "line_number": 376,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 377,
+                    "text": "timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')"
+                },
+                {
+                    "line_number": 378,
+                    "text": "filename = f\"playoff_simulation_{timestamp}.csv\""
+                },
+                {
+                    "line_number": 379,
+                    "text": ""
+                },
+                {
+                    "line_number": 380,
+                    "text": "# Preparar dados para CSV"
+                },
+                {
+                    "line_number": 381,
+                    "text": "results = []"
+                },
+                {
+                    "line_number": 382,
+                    "text": "for team, wins in champions:"
+                },
+                {
+                    "line_number": 383,
+                    "text": "results.append({"
+                },
+                {
+                    "line_number": 384,
+                    "text": "'team': team,"
+                },
+                {
+                    "line_number": 385,
+                    "text": "'championship_probability': (wins / simulations) * 100,"
+                },
+                {
+                    "line_number": 386,
+                    "text": "'championship_wins': wins,"
+                },
+                {
+                    "line_number": 387,
+                    "text": "'conference': 'Eastern' if team in dict(east_winners) else 'Western',"
+                },
+                {
+                    "line_number": 388,
+                    "text": "'conference_wins': dict(east_winners).get(team, 0) + dict(west_winners).get(team, 0)"
+                },
+                {
+                    "line_number": 389,
+                    "text": "})"
+                },
+                {
+                    "line_number": 390,
+                    "text": ""
+                },
+                {
+                    "line_number": 391,
+                    "text": "df = pd.DataFrame(results)"
+                },
+                {
+                    "line_number": 392,
+                    "text": "df.to_csv(filename, index=False)"
+                },
+                {
+                    "line_number": 393,
+                    "text": "print(f\"\\n\ud83d\udcbe Resultados salvos em {filename}\")"
+                },
+                {
+                    "line_number": 394,
+                    "text": ""
+                },
+                {
+                    "line_number": 395,
+                    "text": "def main():"
+                },
+                {
+                    "line_number": 396,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 397,
+                    "text": "Fun\u00e7\u00e3o principal"
+                },
+                {
+                    "line_number": 398,
+                    "text": "\"\"\""
+                },
+                {
+                    "line_number": 399,
+                    "text": "import argparse"
+                },
+                {
+                    "line_number": 400,
+                    "text": ""
+                },
+                {
+                    "line_number": 401,
+                    "text": "parser = argparse.ArgumentParser(description=\"NBA Playoffs Simulator\")"
+                },
+                {
+                    "line_number": 402,
+                    "text": "parser.add_argument(\"mode\", choices=[\"single\", \"odds\", \"bracket\"],"
+                },
+                {
+                    "line_number": 403,
+                    "text": "help=\"Modo: single (simula\u00e7\u00e3o \u00fanica), odds (probabilidades), bracket (mostrar bracket)\")"
+                },
+                {
+                    "line_number": 404,
+                    "text": "parser.add_argument(\"--simulations\", type=int, default=1000,"
+                },
+                {
+                    "line_number": 405,
+                    "text": "help=\"N\u00famero de simula\u00e7\u00f5es para modo odds\")"
+                },
+                {
+                    "line_number": 406,
+                    "text": ""
+                },
+                {
+                    "line_number": 407,
+                    "text": "args = parser.parse_args()"
+                },
+                {
+                    "line_number": 408,
+                    "text": ""
+                },
+                {
+                    "line_number": 409,
+                    "text": "# Criar simulador"
+                },
+                {
+                    "line_number": 410,
+                    "text": "simulator = NBAPlayoffSimulator()"
+                },
+                {
+                    "line_number": 411,
+                    "text": ""
+                },
+                {
+                    "line_number": 412,
+                    "text": "# Carregar dados"
+                },
+                {
+                    "line_number": 413,
+                    "text": "if not simulator.load_teams_data():"
+                },
+                {
+                    "line_number": 414,
+                    "text": "print(\"\u274c Erro ao carregar dados\")"
+                },
+                {
+                    "line_number": 415,
+                    "text": "return"
+                },
+                {
+                    "line_number": 416,
+                    "text": ""
+                },
+                {
+                    "line_number": 417,
+                    "text": "# Criar bracket"
+                },
+                {
+                    "line_number": 418,
+                    "text": "if not simulator.create_playoff_bracket():"
+                },
+                {
+                    "line_number": 419,
+                    "text": "print(\"\u274c Erro ao criar bracket\")"
+                },
+                {
+                    "line_number": 420,
+                    "text": "return"
+                },
+                {
+                    "line_number": 421,
+                    "text": ""
+                },
+                {
+                    "line_number": 422,
+                    "text": "# Executar modo selecionado"
+                },
+                {
+                    "line_number": 423,
+                    "text": "if args.mode == \"single\":"
+                },
+                {
+                    "line_number": 424,
+                    "text": "champion = simulator.simulate_single_playoffs()"
+                },
+                {
+                    "line_number": 425,
+                    "text": "print(f\"\\n\ud83c\udf89 Campe\u00e3o da simula\u00e7\u00e3o: {champion}\")"
+                },
+                {
+                    "line_number": 426,
+                    "text": ""
+                },
+                {
+                    "line_number": 427,
+                    "text": "elif args.mode == \"odds\":"
+                },
+                {
+                    "line_number": 428,
+                    "text": "favorite = simulator.run_championship_odds(args.simulations)"
+                },
+                {
+                    "line_number": 429,
+                    "text": "print(f\"\\n\ud83c\udfc6 Favorito ao t\u00edtulo: {favorite}\")"
+                },
+                {
+                    "line_number": 430,
+                    "text": ""
+                },
+                {
+                    "line_number": 431,
+                    "text": "elif args.mode == \"bracket\":"
+                },
+                {
+                    "line_number": 432,
+                    "text": "simulator.display_bracket()"
+                },
+                {
+                    "line_number": 433,
+                    "text": ""
+                },
+                {
+                    "line_number": 434,
+                    "text": "if __name__ == \"__main__\":"
+                },
+                {
+                    "line_number": 435,
+                    "text": "main()"
+                }
+            ],
+            "token_count": 3958
+        }
+    ]
+}
